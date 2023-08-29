@@ -1,10 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Product, Contact, Orders, OrderUpdate
+from django.contrib import messages
 from math import ceil
 import json
 
 # Create your views here.
 from django.http import HttpResponse
+
+# Signup User model importing
+from django.contrib.auth.models import User
+
+# For authentication
+from django.contrib.auth import authenticate, login as auth_login, logout
 
 
 def index(request):
@@ -93,5 +100,43 @@ def signup(request):
     if request.method == "POST":
         # GET THE PARAMETERS
         signup_email = request.POST["signup_email"]
+        fname = request.POST["fname"]
+        lname = request.POST["lname"]
+        pass1 = request.POST["pass1"]
+        pass2 = request.POST["pass2"]
+        username = fname
+
+        if pass1 != pass2:
+            messages.error(request, " Your BharaZone account has been successfully created")
+            return redirect('ShopHome')
+
+
+        user = User.objects.create_user(username, signup_email, pass1)
+        user.first_name = fname
+        user.last_name = lname
+        user.save()
+        messages.success(request, " Your BharaZone account has been successfully created")
+        return redirect('ShopHome')
     else:
         return HttpResponse("404 - Not Found")
+    
+def login(request):
+    if request.method == "POST":
+        login_fname = request.POST["login_fname"]
+        login_pass = request.POST["login_pass"]
+
+        user=authenticate(username = login_fname, password= login_pass)
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, "Successfully Logged In")
+            return redirect("ShopHome")
+        else:
+            messages.error(request, "Invalid credentials! Please try again")
+            return redirect("ShopHome")
+
+    return HttpResponse("404- Not found")
+
+def logout(request):
+    logout(request)
+    messages.success(request, "Successfully logged out")
+    return redirect("ShopHome")

@@ -25,4 +25,6 @@ urlpatterns = [
     path("products/<int:myid>", views.productView, name="ProductView"),
     path("checkout/", views.checkout, name="Checkout"),
     path("signup/", views.signup, name="Signup"),
+    path("login/", views.login, name="Login"),
+    path("logout/", views.logout, name="Logout"),
 ]
