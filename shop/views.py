@@ -25,6 +25,7 @@ def about(request):
 
 
 def contact(request):
+    thank=False
     if request.method=="POST":
         name = request.POST.get('name', '')
         email = request.POST.get('email', '')
@@ -32,7 +33,8 @@ def contact(request):
         desc = request.POST.get('desc', '')
         contact = Contact(name=name, email=email, phone=phone, desc=desc)
         contact.save()
-    return render(request, 'shop/contact.html')
+        thank=True
+    return render(request, 'shop/contact.html', {'thank':thank})
 
 
 def tracker(request):
@@ -86,3 +88,10 @@ def checkout(request):
         id = order.order_id
         return render(request, 'shop/checkout.html', {'thank':thank, 'id': id})
     return render(request, 'shop/checkout.html')
+
+def signup(request):
+    if request.method == "POST":
+        # GET THE PARAMETERS
+        signup_email = request.POST["signup_email"]
+    else:
+        return HttpResponse("404 - Not Found")
